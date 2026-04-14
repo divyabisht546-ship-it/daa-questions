@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void printPath(vector<int>& parent, int j){
+    if(parent[j] == -1){
+        cout << j << " ";
+        return;
+    }
+    printPath(parent, parent[j]);
+    cout << j << " ";
+}
+
+void bellmanFord(int V, vector<vector<int>>& graph, int src){
+    vector<int> dist(V, INT_MAX);
+    vector<int> parent(V, -1);
+    dist[src] = 0;
+
+    for(int k = 0; k < V-1; k++){
+        for(int u = 0; u < V; u++){
+            for(int v = 0; v < V; v++){
+                if(graph[u][v] != 0 && dist[u] != INT_MAX &&
+                   dist[u] + graph[u][v] < dist[v]){
+                    dist[v] = dist[u] + graph[u][v];
+                    parent[v] = u;
+                }
+            }
+        }
+    }
+
+    for(int i = 0; i < V; i++){
+        cout << "Path to " << i << " (Cost " << dist[i] << "): ";
+        printPath(parent, i);
+        cout << endl;
+    }
+}
+
+int main(){
+    int V;
+    cin >> V;
+
+    vector<vector<int>> graph(V, vector<int>(V));
+    for(int i=0;i<V;i++){
+        for(int j=0;j<V;j++){
+            cin >> graph[i][j];
+        }
+    }
+
+    int src;
+    cin >> src;
+
+    bellmanFord(V, graph, src);
+}
